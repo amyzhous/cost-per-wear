@@ -24,6 +24,7 @@ export function ItemForm({ open, onClose, onSave, editingItem }: ItemFormProps) 
   const [cost, setCost] = useState('');
   const [wears, setWears] = useState('0');
   const [imageUrl, setImageUrl] = useState('');
+  const [category, setCategory] = useState('');
 
   useEffect(() => {
     if (editingItem) {
@@ -31,30 +32,34 @@ export function ItemForm({ open, onClose, onSave, editingItem }: ItemFormProps) 
       setCost(editingItem.cost.toString());
       setWears(editingItem.wears.toString());
       setImageUrl(editingItem.imageUrl || '');
+      setCategory(editingItem.category);
     } else {
       setName('');
       setCost('');
       setWears('0');
       setImageUrl('');
+      setCategory('');
     }
   }, [editingItem, open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
 
-    if (!name.trim() || !cost) return;
+    if (!name.trim() || !cost || !category.trim()) return;
 
     onSave({
       name: name.trim(),
       cost: parseFloat(cost),
       wears: parseInt(wears) || 0,
       imageUrl: imageUrl.trim() || undefined,
+      category: category.trim(),
     });
 
     setName('');
     setCost('');
     setWears('0');
     setImageUrl('');
+    setCategory('');
   };
 
   return (
@@ -80,6 +85,25 @@ export function ItemForm({ open, onClose, onSave, editingItem }: ItemFormProps) 
                 onChange={(e) => setName(e.target.value)}
                 required
               />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="category">Category</Label>
+              <Input
+                id="category"
+                placeholder="e.g., Clothing, Accessories, Shoes"
+                value={category}
+                onChange={(e) => setCategory(e.target.value)}
+                required
+                list="categories"
+              />
+              <datalist id="categories">
+                <option value="Clothing" />
+                <option value="Accessories" />
+                <option value="Shoes" />
+                <option value="Outerwear" />
+                <option value="Bags" />
+              </datalist>
             </div>
 
             <div className="space-y-2">

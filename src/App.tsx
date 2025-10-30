@@ -13,6 +13,7 @@ export interface Item {
   cost: number;
   wears: number;
   imageUrl?: string;
+  category: string;
 }
 
 function AppContent() {
@@ -21,7 +22,15 @@ function AppContent() {
   // Load items from localStorage or start with empty array
   const [items, setItems] = useState<Item[]>(() => {
     const savedItems = localStorage.getItem('costPerWearItems');
-    return savedItems ? JSON.parse(savedItems) : [];
+    if (savedItems) {
+      const parsed = JSON.parse(savedItems);
+      // Migrate old items without category to have a default category
+      return parsed.map((item: any) => ({
+        ...item,
+        category: item.category || 'Uncategorized'
+      }));
+    }
+    return [];
   });
 
   const [isFormOpen, setIsFormOpen] = useState(false);
