@@ -12,6 +12,7 @@ export interface Item {
   name: string;
   cost: number;
   wears: number;
+  imageUrl?: string;
 }
 
 function AppContent() {

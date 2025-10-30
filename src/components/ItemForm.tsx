@@ -23,42 +23,47 @@ export function ItemForm({ open, onClose, onSave, editingItem }: ItemFormProps) 
   const [name, setName] = useState('');
   const [cost, setCost] = useState('');
   const [wears, setWears] = useState('0');
+  const [imageUrl, setImageUrl] = useState('');
 
   useEffect(() => {
     if (editingItem) {
       setName(editingItem.name);
       setCost(editingItem.cost.toString());
       setWears(editingItem.wears.toString());
+      setImageUrl(editingItem.imageUrl || '');
     } else {
       setName('');
       setCost('');
       setWears('0');
+      setImageUrl('');
     }
   }, [editingItem, open]);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    
+
     if (!name.trim() || !cost) return;
 
     onSave({
       name: name.trim(),
       cost: parseFloat(cost),
       wears: parseInt(wears) || 0,
+      imageUrl: imageUrl.trim() || undefined,
     });
 
     setName('');
     setCost('');
     setWears('0');
+    setImageUrl('');
   };
 
   return (
     <Dialog open={open} onOpenChange={onClose}>
       <DialogContent>
-        <DialogHeader>
+        <DialogHeader className="text-center">
           <DialogTitle className="text-slate-900 dark:text-white">{editingItem ? 'Edit Item' : 'Add New Item'}</DialogTitle>
           <DialogDescription className="text-slate-700 dark:text-slate-300">
-            {editingItem 
+            {editingItem
               ? 'Update the details of your wardrobe item.'
               : 'Add a new item to track its cost per wear.'}
           </DialogDescription>
@@ -74,6 +79,17 @@ export function ItemForm({ open, onClose, onSave, editingItem }: ItemFormProps) 
                 value={name}
                 onChange={(e) => setName(e.target.value)}
                 required
+              />
+            </div>
+
+            <div className="space-y-2">
+              <Label htmlFor="imageUrl">Image URL (optional)</Label>
+              <Input
+                id="imageUrl"
+                type="url"
+                placeholder="https://example.com/image.jpg"
+                value={imageUrl}
+                onChange={(e) => setImageUrl(e.target.value)}
               />
             </div>
 

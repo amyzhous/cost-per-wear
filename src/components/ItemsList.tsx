@@ -67,6 +67,7 @@ export function ItemsList({ items, onUpdateItem, onEditItem, onDeleteItem }: Ite
         <Table>
           <TableHeader>
             <TableRow className="border-b border-white/20 dark:border-white/10 hover:bg-transparent">
+              <TableHead className="text-slate-900 dark:text-white px-6 h-14 w-20">Image</TableHead>
               <TableHead className="text-slate-900 dark:text-white px-6 h-14">Item Name</TableHead>
               <TableHead className="text-slate-900 dark:text-white text-right">Cost Per Wear</TableHead>
               <TableHead className="text-slate-900 dark:text-white text-right">Cost</TableHead>
@@ -79,10 +80,26 @@ export function ItemsList({ items, onUpdateItem, onEditItem, onDeleteItem }: Ite
               const costPerWear = item.wears > 0 ? item.cost / item.wears : 0;
               
               return (
-                <TableRow 
-                  key={item.id} 
+                <TableRow
+                  key={item.id}
                   className="border-b border-white/10 dark:border-white/5 hover:bg-white/30 dark:hover:bg-white/5 transition-colors"
                 >
+                  <TableCell className="px-6 py-5">
+                    {item.imageUrl ? (
+                      <img
+                        src={item.imageUrl}
+                        alt={item.name}
+                        className="w-12 h-12 object-cover rounded-lg ring-2 ring-white/50 dark:ring-white/20"
+                        onError={(e) => {
+                          e.currentTarget.style.display = 'none';
+                        }}
+                      />
+                    ) : (
+                      <div className="w-12 h-12 rounded-lg bg-gradient-to-br from-slate-200 to-slate-300 dark:from-slate-700 dark:to-slate-800 ring-2 ring-white/50 dark:ring-white/20 flex items-center justify-center">
+                        <span className="text-slate-500 dark:text-slate-400 text-xs">No image</span>
+                      </div>
+                    )}
+                  </TableCell>
                   <TableCell className="px-6 py-5">
                     <span className="text-slate-900 dark:text-white">{item.name}</span>
                   </TableCell>
