@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { DashboardCards } from './components/DashboardCards';
 import { ItemForm } from './components/ItemForm';
 import { ItemsList } from './components/ItemsList';
@@ -16,13 +16,20 @@ export interface Item {
 
 function AppContent() {
   const { theme, toggleTheme } = useTheme();
-  const [items, setItems] = useState<Item[]>([
-    { id: '1', name: 'Leather Jacket', cost: 300, wears: 25 },
-    { id: '2', name: 'Running Shoes', cost: 120, wears: 50 },
-    { id: '3', name: 'Denim Jeans', cost: 80, wears: 40 },
-  ]);
+
+  // Load items from localStorage or start with empty array
+  const [items, setItems] = useState<Item[]>(() => {
+    const savedItems = localStorage.getItem('costPerWearItems');
+    return savedItems ? JSON.parse(savedItems) : [];
+  });
+
   const [isFormOpen, setIsFormOpen] = useState(false);
   const [editingItem, setEditingItem] = useState<Item | null>(null);
+
+  // Save items to localStorage whenever they change
+  useEffect(() => {
+    localStorage.setItem('costPerWearItems', JSON.stringify(items));
+  }, [items]);
 
   const handleAddItem = (item: Omit<Item, 'id'>) => {
     const newItem = {
