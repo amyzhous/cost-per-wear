@@ -1,45 +1,50 @@
+import { useState } from 'react';
 import { Item } from '../App';
 import { Card } from './ui/card';
 import { TrendingDown, Package, DollarSign, Calculator } from 'lucide-react';
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from './ui/select';
 
 interface DashboardCardsProps {
   items: Item[];
 }
 
 export function DashboardCards({ items }: DashboardCardsProps) {
+  const [selectedCategory, setSelectedCategory] = useState<string>('all');
+
   const totalItems = items.length;
   const totalSpent = items.reduce((sum, item) => sum + item.cost, 0);
   const totalWears = items.reduce((sum, item) => sum + item.wears, 0);
   const averageCostPerWear = totalWears > 0 ? totalSpent / totalWears : 0;
 
-  // Group items by category and find most worn in each
-  const categoriesMap = new Map<string, Item>();
-  items.forEach(item => {
-    const existing = categoriesMap.get(item.category);
-    if (!existing || item.wears > existing.wears) {
-      categoriesMap.set(item.category, item);
-    }
-  });
+  // Get unique categories
+  const categories = Array.from(new Set(items.map(item => item.category)));
 
-  // Create cards for most worn items per category
-  const categoryColors = [
-    { color: 'text-pink-600 dark:text-pink-400', bgColor: 'bg-pink-500/20 dark:bg-pink-500/30' },
-    { color: 'text-indigo-600 dark:text-indigo-400', bgColor: 'bg-indigo-500/20 dark:bg-indigo-500/30' },
-    { color: 'text-cyan-600 dark:text-cyan-400', bgColor: 'bg-cyan-500/20 dark:bg-cyan-500/30' },
-    { color: 'text-orange-600 dark:text-orange-400', bgColor: 'bg-orange-500/20 dark:bg-orange-500/30' },
-    { color: 'text-teal-600 dark:text-teal-400', bgColor: 'bg-teal-500/20 dark:bg-teal-500/30' },
-    { color: 'text-rose-600 dark:text-rose-400', bgColor: 'bg-rose-500/20 dark:bg-rose-500/30' },
-  ];
+  // Filter items based on selected category
+  const filteredItems = selectedCategory === 'all'
+    ? items
+    : items.filter(item => item.category === selectedCategory);
 
-  const mostWornByCategory = Array.from(categoriesMap.entries()).map(([category, item], index) => ({
-    label: `Most Worn - ${category}`,
-    value: item.name,
-    subValue: `${item.wears} wears`,
-    icon: TrendingDown,
-    ...categoryColors[index % categoryColors.length],
-  }));
+  // Find most worn item from filtered items
+  const mostWornItem = filteredItems.length > 0
+    ? filteredItems.reduce((most, item) => item.wears > most.wears ? item : most)
+    : null;
 
-  const generalStats = [
+  const stats = [
+    {
+      label: 'Most Worn Item',
+      value: mostWornItem?.name || 'N/A',
+      subValue: mostWornItem ? `${mostWornItem.wears} wears` : '',
+      icon: TrendingDown,
+      color: 'text-pink-600 dark:text-pink-400',
+      bgColor: 'bg-pink-500/20 dark:bg-pink-500/30',
+      hasDropdown: true,
+    },
     {
       label: 'Total Items',
       value: totalItems,
@@ -63,17 +68,30 @@ export function DashboardCards({ items }: DashboardCardsProps) {
     },
   ];
 
-  const stats = [...mostWornByCategory, ...generalStats];
-
   return (
-    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-5 mb-12">
+    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
       {stats.map((stat, index) => {
         const Icon = stat.icon;
         return (
           <Card key={index} className="glass-card p-6 rounded-3xl group hover:scale-[1.02] transition-transform duration-300">
             <div className="flex items-start justify-between gap-4">
               <div className="flex-1 min-w-0">
-                <p className="text-slate-600 dark:text-slate-400 mb-3 text-sm">{stat.label}</p>
+                <div className="flex items-center justify-between mb-3">
+                  <p className="text-slate-600 dark:text-slate-400 text-sm">{stat.label}</p>
+                  {'hasDropdown' in stat && stat.hasDropdown && categories.length > 0 && (
+                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                      <SelectTrigger className="h-7 w-auto text-xs border-slate-300 dark:border-slate-600">
+                        <SelectValue />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="all">All</SelectItem>
+                        {categories.map(cat => (
+                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                        ))}
+                      </SelectContent>
+                    </Select>
+                  )}
+                </div>
                 <p className="text-slate-900 dark:text-white mb-1 truncate text-lg font-semibold">{stat.value}</p>
                 {stat.subValue && (
                   <p className="text-slate-600 dark:text-slate-400 text-sm">{stat.subValue}</p>

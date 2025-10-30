@@ -2,6 +2,7 @@ import { Item } from '../App';
 import { Card } from './ui/card';
 import { Button } from './ui/button';
 import { Input } from './ui/input';
+import { Badge } from './ui/badge';
 import { Minus, Plus, Pencil, Trash2 } from 'lucide-react';
 import {
   AlertDialog,
@@ -69,6 +70,7 @@ export function ItemsList({ items, onUpdateItem, onEditItem, onDeleteItem }: Ite
             <TableRow className="border-b border-white/20 dark:border-white/10 hover:bg-transparent">
               <TableHead className="text-slate-900 dark:text-white px-6 h-14 w-20">Image</TableHead>
               <TableHead className="text-slate-900 dark:text-white px-6 h-14">Item Name</TableHead>
+              <TableHead className="text-slate-900 dark:text-white">Category</TableHead>
               <TableHead className="text-slate-900 dark:text-white text-right">Cost Per Wear</TableHead>
               <TableHead className="text-slate-900 dark:text-white text-right">Cost</TableHead>
               <TableHead className="text-slate-900 dark:text-white text-right">Wears</TableHead>
@@ -102,6 +104,11 @@ export function ItemsList({ items, onUpdateItem, onEditItem, onDeleteItem }: Ite
                   </TableCell>
                   <TableCell className="px-6 py-5">
                     <span className="text-slate-900 dark:text-white">{item.name}</span>
+                  </TableCell>
+                  <TableCell>
+                    <Badge variant="secondary" className="bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-300 border-blue-200 dark:border-blue-800 hover:bg-blue-100 dark:hover:bg-blue-900/30">
+                      {item.category}
+                    </Badge>
                   </TableCell>
                   <TableCell className="text-slate-900 dark:text-white text-right">
                     ${costPerWear.toFixed(2)}

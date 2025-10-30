@@ -59,7 +59,7 @@ const DialogContent = React.forwardRef<
         ref={ref}
         data-slot="dialog-content"
         className={cn(
-          "glass-card fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] translate-x-[-50%] translate-y-[-50%] gap-4 rounded-3xl p-6 sm:max-w-lg hover:transform-none transition-none",
+          "glass-card !transition-none hover:!transform-none hover:!shadow-[0_8px_32px_0_rgba(31,38,135,0.15),inset_0_1px_0_0_rgba(255,255,255,0.7),inset_0_-1px_0_0_rgba(255,255,255,0.3)] dark:hover:!shadow-[0_8px_32px_0_rgba(0,0,0,0.4),inset_0_1px_0_0_rgba(255,255,255,0.2),inset_0_-1px_0_0_rgba(255,255,255,0.1)] hover:!bg-white/40 dark:hover:!bg-white/10 fixed top-[50%] left-[50%] z-50 grid w-full max-w-[calc(100%-2rem)] !translate-x-[-50%] !translate-y-[-50%] gap-4 rounded-3xl p-6 sm:max-w-lg",
           className,
         )}
         {...props}
