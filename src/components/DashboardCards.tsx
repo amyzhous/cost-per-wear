@@ -17,11 +17,6 @@ interface DashboardCardsProps {
 export function DashboardCards({ items }: DashboardCardsProps) {
   const [selectedCategory, setSelectedCategory] = useState<string>('all');
 
-  const totalItems = items.length;
-  const totalSpent = items.reduce((sum, item) => sum + item.cost, 0);
-  const totalWears = items.reduce((sum, item) => sum + item.wears, 0);
-  const averageCostPerWear = totalWears > 0 ? totalSpent / totalWears : 0;
-
   // Get unique categories
   const categories = Array.from(new Set(items.map(item => item.category)));
 
@@ -29,6 +24,12 @@ export function DashboardCards({ items }: DashboardCardsProps) {
   const filteredItems = selectedCategory === 'all'
     ? items
     : items.filter(item => item.category === selectedCategory);
+
+  // Calculate stats based on filtered items
+  const totalItems = filteredItems.length;
+  const totalSpent = filteredItems.reduce((sum, item) => sum + item.cost, 0);
+  const totalWears = filteredItems.reduce((sum, item) => sum + item.wears, 0);
+  const averageCostPerWear = totalWears > 0 ? totalSpent / totalWears : 0;
 
   // Find most worn item from filtered items
   const mostWornItem = filteredItems.length > 0
@@ -51,6 +52,7 @@ export function DashboardCards({ items }: DashboardCardsProps) {
       icon: Package,
       color: 'text-blue-600 dark:text-blue-400',
       bgColor: 'bg-blue-500/20 dark:bg-blue-500/30',
+      hasDropdown: true,
     },
     {
       label: 'Total Spent',
@@ -58,6 +60,7 @@ export function DashboardCards({ items }: DashboardCardsProps) {
       icon: DollarSign,
       color: 'text-green-600 dark:text-green-400',
       bgColor: 'bg-green-500/20 dark:bg-green-500/30',
+      hasDropdown: true,
     },
     {
       label: 'Average Cost Per Wear',
@@ -65,6 +68,7 @@ export function DashboardCards({ items }: DashboardCardsProps) {
       icon: Calculator,
       color: 'text-purple-600 dark:text-purple-400',
       bgColor: 'bg-purple-500/20 dark:bg-purple-500/30',
+      hasDropdown: true,
     },
   ];
 
@@ -87,7 +91,7 @@ export function DashboardCards({ items }: DashboardCardsProps) {
               {hasDropdown && (
                 <div className="mb-3">
                   <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger className="h-9 w-full text-sm border-slate-300 dark:border-slate-600">
+                    <SelectTrigger className="h-9 w-full text-sm border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 font-medium">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
@@ -99,9 +103,6 @@ export function DashboardCards({ items }: DashboardCardsProps) {
                   </Select>
                 </div>
               )}
-
-              {/* Add spacing for cards without dropdown to match height */}
-              {!hasDropdown && <div className="h-[48px]"></div>}
 
               <p className="text-slate-900 dark:text-white mb-1 truncate text-lg font-semibold">{stat.value}</p>
               {stat.subValue && (
