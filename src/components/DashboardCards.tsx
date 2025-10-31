@@ -91,7 +91,7 @@ export function DashboardCards({ items }: DashboardCardsProps) {
               {hasDropdown && (
                 <div className="mb-3">
                   <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                    <SelectTrigger className="h-9 w-full text-sm border-slate-300 dark:border-slate-600 bg-white dark:bg-slate-800 font-medium">
+                    <SelectTrigger className="h-9 w-full text-sm border-slate-300 dark:border-slate-600 font-medium">
                       <SelectValue />
                     </SelectTrigger>
                     <SelectContent>
