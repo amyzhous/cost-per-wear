@@ -72,34 +72,41 @@ export function DashboardCards({ items }: DashboardCardsProps) {
     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-5 mb-12">
       {stats.map((stat, index) => {
         const Icon = stat.icon;
+        const hasDropdown = 'hasDropdown' in stat && stat.hasDropdown && categories.length > 0;
+
         return (
           <Card key={index} className="glass-card p-6 rounded-3xl group hover:scale-[1.02] transition-transform duration-300">
-            <div className="flex items-start justify-between gap-4">
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between mb-3">
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">{stat.label}</p>
-                  {'hasDropdown' in stat && stat.hasDropdown && categories.length > 0 && (
-                    <Select value={selectedCategory} onValueChange={setSelectedCategory}>
-                      <SelectTrigger className="h-7 w-auto text-xs border-slate-300 dark:border-slate-600">
-                        <SelectValue />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="all">All</SelectItem>
-                        {categories.map(cat => (
-                          <SelectItem key={cat} value={cat}>{cat}</SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  )}
-                </div>
-                <p className="text-slate-900 dark:text-white mb-1 truncate text-lg font-semibold">{stat.value}</p>
-                {stat.subValue && (
-                  <p className="text-slate-600 dark:text-slate-400 text-sm">{stat.subValue}</p>
-                )}
-              </div>
+            <div className="flex items-start justify-between gap-4 mb-3">
+              <p className="text-slate-600 dark:text-slate-400 text-sm">{stat.label}</p>
               <div className={`${stat.bgColor} ${stat.color} p-3 rounded-2xl backdrop-blur-md shadow-lg border border-white/30 dark:border-white/20 shrink-0`}>
                 <Icon className="w-5 h-5" />
               </div>
+            </div>
+
+            <div className="flex-1">
+              {hasDropdown && (
+                <div className="mb-3">
+                  <Select value={selectedCategory} onValueChange={setSelectedCategory}>
+                    <SelectTrigger className="h-9 w-full text-sm border-slate-300 dark:border-slate-600">
+                      <SelectValue />
+                    </SelectTrigger>
+                    <SelectContent>
+                      <SelectItem value="all">All Categories</SelectItem>
+                      {categories.map(cat => (
+                        <SelectItem key={cat} value={cat}>{cat}</SelectItem>
+                      ))}
+                    </SelectContent>
+                  </Select>
+                </div>
+              )}
+
+              {/* Add spacing for cards without dropdown to match height */}
+              {!hasDropdown && <div className="h-[48px]"></div>}
+
+              <p className="text-slate-900 dark:text-white mb-1 truncate text-lg font-semibold">{stat.value}</p>
+              {stat.subValue && (
+                <p className="text-slate-600 dark:text-slate-400 text-sm">{stat.subValue}</p>
+              )}
             </div>
           </Card>
         );
